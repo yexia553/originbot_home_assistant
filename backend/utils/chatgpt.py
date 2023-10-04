@@ -2,7 +2,7 @@ import openai
 import time
 import os
 from utils import envs
-import subprocess
+import paramiko
 
 
 class ChatGPT:
@@ -10,7 +10,7 @@ class ChatGPT:
         openai.api_key = envs.API_KEY
         openai.api_base = envs.API_BASE
         openai.api_type = 'azure'
-        openai.api_version = '2022-12-01'
+        openai.api_version = '2023-07-01-preview'
         self.messages = []
         self.max_token_length = 6000
         self.max_completion_length = 3000
@@ -35,7 +35,7 @@ class ChatGPT:
         return '\n'.join(processed_lines)
 
     def generate(self, user_input):
-        prompt = """[user]
+        prompt = """
         我会交给你一些信息、要求，请你完成任务。
         以下是信息：
         1. OriginBot是一个两轮的轮式机器人，基于ROS2 foxy开发
@@ -75,9 +75,12 @@ class ChatGPT:
         以下是任务: 
         """
         prompt += user_input
-        response = openai.Completion.create(
+        response = openai.ChatCompletion.create(
             engine=envs.ENGINE,
-            prompt=prompt,
+            messages=[
+                {"role":"system","content":"你是一个机器人开发专家，请你帮助我完成一些任务"},
+                {"role":"user","content": prompt}
+            ],
             temperature=0.1,
             max_tokens=self.max_completion_length,
             top_p=0.95,
@@ -85,37 +88,39 @@ class ChatGPT:
             presence_penalty=0.0,
             stop=None,
         )
-        text = response['choices'][0]['text']
+        print(response)
+        text = response['choices'][0]['message']['content']
         print(text)
         res_list = text.split("###---")
         res = res_list[1]
-        res = self.remove_leading_spaces(res)
+        # res = self.remove_leading_spaces(res)
+        print(res)
+        res = res.splitlines()[1:]
+        res = '\n'.join(res)
         with open('/tmp/OriginBot.py', 'w') as f:
             f.write(res)
         self.run_script('/tmp/OriginBot.py')
-        # time.sleep(30)
-        # os.remove('OriginBot.py')
 
     def run_script(self, script_path):
-        # Check if the script file exists.
-        try:
-            with open(script_path, 'r') as file:
-                pass
-        except IOError:
-            print('The Python script does not exist.')
-            return
+        """
+        通过SSH把脚本上传到OriginBot服务器，并在远端执行脚本
+        """
+        hostname = '192.168.1.111'
+        port = 22
+        username = 'root'
+        password = 'root'
+        ssh = paramiko.SSHClient()
+        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        ssh.connect(hostname=hostname, port=port, username=username, password=password)
 
-        # Run the script.
-        try:
-            process = subprocess.Popen(["python3", script_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            stdout, stderr = process.communicate()
+        with open(script_path, 'r') as f:
+            script = f.read()
+        os.remove(script_path)  # 删除本地脚本
+        ssh.exec_command(f'echo "{script}" > {script_path}')
+        stdin, stdout, stderr = ssh.exec_command(f'export PATH=/userdata/dev_ws/install/hobot_audio/bin:/opt/tros/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:$PATH && \
+                                                    export PYTHONPATH=/userdata/dev_ws/install/originbot_linefollower/lib/python3.8/site-packages:/userdata/dev_ws/install/originbot_demo/lib/python3.8/site-packages:/userdata/dev_ws/install/originbot_msgs/lib/python3.8/site-packages:/userdata/dev_ws/install/originbot_goal_service/lib/python3.8/site-packages:/opt/tros/lib/python3.8/site-packages:$PYTHONPATH &&\
+                                                    source /opt/tros/setup.bash && \
+                                                    source /userdata/dev_ws/install/setup.bash && \
+                                                    /usr/bin/python3 /tmp/OriginBot.py')
 
-            # If the script was executed successfully, stdout will hold its output. 
-            # If there was an error executing the script, stderr will hold the error message.
-            if stdout:
-                print(f"Output:\n{stdout.decode()}")
-            if stderr:
-                print(f"Error:\n{stderr.decode()}")
-
-        except Exception as e:
-            print(f'Error occurred while running the script: {str(e)}')
+        ssh.close()
