@@ -1,0 +1,5 @@
+API_KEY = "xxxxxxxxxxxxxxxxxx"
+API_BASE = "xxxxxxxxxxxxxxxxxx"
+ENGINE = "xxxxxxxxxxxxxxxxxx"
+TENCENT_SECRET_ID = "xxxxxxxxxxxxxxxxxx"
+TENCENT_SECRET_KEY = "xxxxxxxxxxxxxxxxxx"
