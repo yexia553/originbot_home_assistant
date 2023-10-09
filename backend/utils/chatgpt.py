@@ -43,8 +43,8 @@ class ChatGPT:
         以下是要求：
         1. 代码只能用Python
         2. 要基于rclpy.node的Node类拓展
-        3. 代码中要考虑在合适的地方调用rclpy.shutdown()来销毁当前Node节点，而不是要求手动介入
-        4. 线速度为0.2米/s
+        3. 最终一定要让OriginBot停止运动
+        4. 运行时线速度为0.3米/s，停止是线速度为0.0米/s，一定要是浮点数
         5. 输出只能包含markdown格式的python代码，格式模板如下：
         ```python
         ###---
@@ -105,7 +105,7 @@ class ChatGPT:
         """
         通过SSH把脚本上传到OriginBot服务器，并在远端执行脚本
         """
-        hostname = '192.168.1.111'
+        hostname = '192.168.1.111'  # OriginBot的无线IP
         port = 22
         username = 'root'
         password = 'root'
