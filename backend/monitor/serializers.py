@@ -1,8 +1,8 @@
 from rest_framework import serializers
-from .models import Videos
+from .models import ImageModel
 
 
-class VideosSerializers(serializers.ModelSerializer):
+class ImageSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Videos
-        fields = '__all__'
+        model = ImageModel
+        fields = ['id', 'data', 'timestamp']
