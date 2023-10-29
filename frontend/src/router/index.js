@@ -11,6 +11,11 @@ const routes = [
                 name: 'voice-control',
                 component: () => import('../views/home/Home.vue'),
             },
+            {
+                path: '/monitor',
+                name: 'monitor',
+                component: () => import('../views/monitor/Monitor.vue'),
+            },
         ]
     },
 ]

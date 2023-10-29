@@ -4,7 +4,7 @@
             <el-header>
                 <CommonHeader />
             </el-header>
-            <el-main><VoiceControl /></el-main>
+            <el-main><router-view></router-view></el-main>
             <el-footer>
                 <CommonFooter />
             </el-footer>
@@ -15,12 +15,12 @@
 <script>
 import CommonHeader from '../../components/CommonHeader.vue'
 import CommonFooter from '../../components/CommonFooter.vue'
-import VoiceControl from '../voice_control/VoiceControl.vue'
+// import VoiceControl from '../voice_control/VoiceControl.vue'
 export default {
     components: {
         CommonHeader,
         CommonFooter,
-        VoiceControl,
+        // VoiceControl,
     }
 }
 </script>

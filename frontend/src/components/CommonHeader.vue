@@ -11,7 +11,12 @@
         <div>
             <el-row class="sub-menu">
                 <div class="flex">
-                    <el-button type="primary">语音控制
+                    <el-button type="primary" @click="goHome">语音控制
+                        <el-icon :style="{ marginLeft: '5px' }">
+                            <Mic />
+                        </el-icon>
+                    </el-button>
+                    <el-button type="primary" @click="goMonitor">视频监控
                         <el-icon :style="{ marginLeft: '5px' }">
                             <Mic />
                         </el-icon>
@@ -23,13 +28,27 @@
 </template>
 
 <script>
+import { useRouter } from "vue-router";
+
 export default {
     setup() {
+        const router = useRouter();
         let getImgSrc = () => {
             return new URL("../assets/images/originbot.png", import.meta.url).href;
         };
+
+        const goHome = () => {
+            router.push("/");
+        };
+
+        const goMonitor = () => {
+            router.push("/monitor");
+        };
+
         return {
             getImgSrc,
+            goHome,
+            goMonitor,
         }
     }
 }
