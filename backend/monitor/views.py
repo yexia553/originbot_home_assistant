@@ -11,7 +11,7 @@ class ImageViewSet(viewsets.ModelViewSet):
 
 
 def stream_video(request):
-    video_file_path = settings.BASE_DIR + '/output.mp4'
+    video_file_path = str(settings.BASE_DIR) + '/output.mp4'
 
     response = FileResponse(open(video_file_path, 'rb'))
     return response
