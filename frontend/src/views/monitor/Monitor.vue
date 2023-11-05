@@ -1,34 +1,25 @@
 <template>
-    <el-container direction="vertical">
-        <el-header>视频监控</el-header>
-        <el-main>
-            <div class="video-container">
-                <video ref="videoPlayer" autoplay></video>
-            </div>
-        </el-main>
-    </el-container>
+    <div>
+        <!-- Other content -->
+
+        <!-- Use VideoPlayer component with :url prop -->
+        <VideoPlayer :url="'http://192.168.0.120:8001/hls/test.m3u8'" />
+
+        <!-- Other content -->
+    </div>
 </template>
 
-<script setup>
-import { ref, onMounted } from "vue";
+<script>
+// Import VideoPlayer component
+import VideoPlayer from '../../components/VideoPlayer.vue';
 
-let videoPlayer = ref(null);
+export default {
+    components: {
+        VideoPlayer // Register VideoPlayer component
+    },
 
-onMounted(async () => {
-    const streamUrl = 'http://192.168.0.120/api/monitor/video-stream/';
-
-    // Fetching the stream and playing it in our video player.
-    const response = await fetch(streamUrl);
-    const blob = await response.blob();
-    const objectURL = URL.createObjectURL(blob);
-    videoPlayer.value.src = objectURL;
-});
-
+    // Other options...
+};
 </script>
 
-<style scoped>
-.video-container {
-    display: flex;
-    justify-content: center;
-}
-</style>
+<!-- Other styles or scripts as needed -->

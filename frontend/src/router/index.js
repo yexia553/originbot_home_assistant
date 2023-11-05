@@ -4,7 +4,8 @@ const routes = [
     {
         path: '/',
         name: 'home',
-        component: () => import('../views/home/Home.vue'),
+        redirect: '/voice-control',
+        component: () => import('../views/Main.vue'),
         children: [
             {
                 path: '/voice-control',

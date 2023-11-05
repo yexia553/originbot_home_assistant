@@ -1,3 +1,4 @@
+.vscode/
 /backend/utils/envs.py
 frontend/node_modules/
 # Byte-compiled / optimized / DLL files

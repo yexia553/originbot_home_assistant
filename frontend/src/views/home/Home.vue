@@ -1,26 +1,12 @@
 <template>
-    <div class="common-layout">
-        <el-container>
-            <el-header>
-                <CommonHeader />
-            </el-header>
-            <el-main><router-view></router-view></el-main>
-            <el-footer>
-                <CommonFooter />
-            </el-footer>
-        </el-container>
-    </div>
+    <el-main><VoiceControl /></el-main>
 </template>
 
 <script>
-import CommonHeader from '../../components/CommonHeader.vue'
-import CommonFooter from '../../components/CommonFooter.vue'
-// import VoiceControl from '../voice_control/VoiceControl.vue'
+import VoiceControl from '../voice_control/VoiceControl.vue'
 export default {
     components: {
-        CommonHeader,
-        CommonFooter,
-        // VoiceControl,
+        VoiceControl,
     }
 }
 </script>
