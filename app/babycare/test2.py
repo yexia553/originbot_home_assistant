@@ -9,9 +9,26 @@ frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
 frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
 
 # ffmpeg 命令
+# command = [
+#     'ffmpeg',
+#     '-y',  # 覆盖输出文件
+#     '-f', 'rawvideo',
+#     '-vcodec', 'rawvideo',
+#     '-s', '{}x{}'.format(frame_width, frame_height),  # size of one frame
+#     '-pix_fmt', 'bgr24',  # opencv uses bgr format
+#     '-r', '25',  # frames per second
+#     '-i', '-',  # The input comes from a pipe
+#     '-an',  # Tells FFMPEG not to expect any audio
+#     '-vcodec', 'libx264',
+#     '-pix_fmt', 'yuv420p',
+#     '-preset', 'ultrafast',
+#     '-f', 'flv',
+#     'rtmp://10.11.12.173:1935/live/test'  # RTMP server
+# ]
+
 command = [
     'ffmpeg',
-    '-y',  # 覆盖输出文件
+    '-y',  # overwrite output files
     '-f', 'rawvideo',
     '-vcodec', 'rawvideo',
     '-s', '{}x{}'.format(frame_width, frame_height),  # size of one frame
@@ -22,9 +39,13 @@ command = [
     '-vcodec', 'libx264',
     '-pix_fmt', 'yuv420p',
     '-preset', 'ultrafast',
+    '-tune', 'zerolatency',
+    '-g', '25',
+    '-flush_packets', '0',
     '-f', 'flv',
     'rtmp://10.11.12.173:1935/live/test'  # RTMP server
 ]
+
 
 # 开启一个子进程
 ffmpeg = sp.Popen(command, stdin=sp.PIPE)
