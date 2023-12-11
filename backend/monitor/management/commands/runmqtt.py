@@ -29,7 +29,7 @@ command = [
     'zerolatency',
     '-f',
     'flv',  # FLV is a common container format
-    "rtmp://192.168.0.120:1935/live/test",
+    "rtmp://10.11.12.173:1935/live/test",
 ]
 ffmpeg_pipe = Popen(command, stdin=PIPE)
 
@@ -90,6 +90,6 @@ class Command(BaseCommand):
         client.on_connect = on_connect
         client.on_message = on_message
 
-        client.connect("192.168.0.120", 1883, 60)
+        client.connect("10.11.12.173", 1883, 60)
 
         client.loop_forever()
