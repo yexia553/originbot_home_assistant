@@ -31,10 +31,6 @@ try:
             # Publish the encoded string via MQTT
             client.publish("robot/camera/image_raw", b64_string)
             print("sent a image to mqtt server")
-
-            # 如果录制了10秒钟，就跳出循环
-            if time.time() - start_time > 10:
-                break
         else:
             break
 except KeyboardInterrupt:

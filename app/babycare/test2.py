@@ -1,40 +1,43 @@
 import cv2
-import time
-import sounddevice as sd
-import numpy as np
-import threading
+import subprocess as sp
 
-# 录制视频
-def record_video():
-    cap = cv2.VideoCapture('/dev/video0')  # 使用你提供的设备路径
-    fourcc = cv2.VideoWriter_fourcc(*'XVID')
-    out = cv2.VideoWriter('output.avi', fourcc, 20.0, (640, 480))
-    start_time = time.time()
-    while(cap.isOpened()):
-        ret, frame = cap.read()
-        if ret:
-            out.write(frame)
-            if time.time() - start_time > 30:
-                break
-        else:
-            break
-    cap.release()
-    out.release()
+# 视频源，你可以改为你自己的视频文件，或者是网络流媒体地址，或者是摄像头设备
+cap = cv2.VideoCapture('/dev/video0')
 
-# 录制音频
-def record_audio():
-    fs = 44100  # 采样率
-    duration = 30  # 录音时长
-    myrecording = sd.rec(int(duration * fs), samplerate=fs, channels=2)
-    sd.wait()  # 等待录音结束
-    sd.write('output.wav', myrecording, fs)
+# 获取视频的宽度和高度
+frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
 
-# 开始录制
-video_thread = threading.Thread(target=record_video)
-audio_thread = threading.Thread(target=record_audio)
+# ffmpeg 命令
+command = [
+    'ffmpeg',
+    '-y',  # 覆盖输出文件
+    '-f', 'rawvideo',
+    '-vcodec', 'rawvideo',
+    '-s', '{}x{}'.format(frame_width, frame_height),  # size of one frame
+    '-pix_fmt', 'bgr24',  # opencv uses bgr format
+    '-r', '25',  # frames per second
+    '-i', '-',  # The input comes from a pipe
+    '-an',  # Tells FFMPEG not to expect any audio
+    '-vcodec', 'libx264',
+    '-pix_fmt', 'yuv420p',
+    '-preset', 'ultrafast',
+    '-f', 'flv',
+    'rtmp://10.11.12.173:1935/live/test'  # RTMP server
+]
 
-video_thread.start()
-audio_thread.start()
+# 开启一个子进程
+ffmpeg = sp.Popen(command, stdin=sp.PIPE)
 
-video_thread.join()
-audio_thread.join()
+while(cap.isOpened()):
+    ret, frame = cap.read()
+    if not ret:
+        break
+
+    # 将 opencv 的图片通过 pipe 发送到 ffmpeg
+    ffmpeg.stdin.write(frame.tobytes())
+
+# 释放所有资源
+cap.release()
+ffmpeg.stdin.close()
+ffmpeg.wait()
