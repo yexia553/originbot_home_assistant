@@ -3,7 +3,7 @@
         <!-- Other content -->
 
         <!-- Use VideoPlayer component with :url prop -->
-        <VideoPlayer :url="'http://10.11.12.173:8001/hls/test.m3u8'" />
+        <VideoPlayer :url="'ws://10.11.12.173:8000/ws/babycare/'" />
 
         <!-- Other content -->
     </div>
