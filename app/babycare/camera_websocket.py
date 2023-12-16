@@ -1,3 +1,6 @@
+"""
+通过websocket发出去
+"""
 import asyncio
 import cv2
 import websockets
@@ -5,7 +8,7 @@ import time
 
 
 async def send_frame(uri):
-    cap = cv2.VideoCapture(0)  # 使用第一个摄像头
+    cap = cv2.VideoCapture(10)  # 使用第一个摄像头
     if not cap.isOpened():
         print("Could not open video source")
         return

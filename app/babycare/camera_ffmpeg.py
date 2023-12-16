@@ -1,3 +1,8 @@
+"""
+在客户端使用
+ffmpeg -i /dev/video0 -f hls -hls_time 4 -hls_list_size 1 -hls_wrap 4 -hls_flags delete_segments stream.m3u8
+获取hls格式的文件，然后用这个脚本发送出去
+"""
 import requests
 import os
 import time

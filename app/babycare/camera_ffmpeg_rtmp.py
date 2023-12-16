@@ -1,8 +1,11 @@
+"""
+通过ffmpeg把数据发送到基于Nginx搭建的RTMP服务器上
+"""
 import cv2
 import subprocess as sp
 
 # 视频源，你可以改为你自己的视频文件，或者是网络流媒体地址，或者是摄像头设备
-cap = cv2.VideoCapture('/dev/video0')
+cap = cv2.VideoCapture("/dev/video0")
 
 # 获取视频的宽度和高度
 frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
@@ -27,30 +30,43 @@ frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
 # ]
 
 command = [
-    'ffmpeg',
-    '-y',  # overwrite output files
-    '-f', 'rawvideo',
-    '-vcodec', 'rawvideo',
-    '-s', '{}x{}'.format(frame_width, frame_height),  # size of one frame
-    '-pix_fmt', 'bgr24',  # opencv uses bgr format
-    '-r', '25',  # frames per second
-    '-i', '-',  # The input comes from a pipe
-    '-an',  # Tells FFMPEG not to expect any audio
-    '-vcodec', 'libx264',
-    '-pix_fmt', 'yuv420p',
-    '-preset', 'ultrafast',
-    '-tune', 'zerolatency',
-    '-g', '25',
-    '-flush_packets', '0',
-    '-f', 'flv',
-    'rtmp://10.11.12.173:1935/live/test'  # RTMP server
+    "ffmpeg",
+    "-y",  # overwrite output files
+    "-f",
+    "rawvideo",
+    "-vcodec",
+    "rawvideo",
+    "-s",
+    "{}x{}".format(frame_width, frame_height),  # size of one frame
+    "-pix_fmt",
+    "bgr24",  # opencv uses bgr format
+    "-r",
+    "25",  # frames per second
+    "-i",
+    "-",  # The input comes from a pipe
+    "-an",  # Tells FFMPEG not to expect any audio
+    "-vcodec",
+    "libx264",
+    "-pix_fmt",
+    "yuv420p",
+    "-preset",
+    "ultrafast",
+    "-tune",
+    "zerolatency",
+    "-g",
+    "25",
+    "-flush_packets",
+    "0",
+    "-f",
+    "flv",
+    "rtmp://10.11.12.173:1935/live/test",  # RTMP server
 ]
 
 
 # 开启一个子进程
 ffmpeg = sp.Popen(command, stdin=sp.PIPE)
 
-while(cap.isOpened()):
+while cap.isOpened():
     ret, frame = cap.read()
     if not ret:
         break
