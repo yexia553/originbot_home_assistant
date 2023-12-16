@@ -10,11 +10,12 @@ async def send_frame(uri):
         print("Could not open video source")
         return
 
+    cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
+    cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
+    cap.set(cv2.CAP_PROP_FPS, 30)
+
     try:
         async with websockets.connect(uri) as websocket:
-            cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
-            cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
-            cap.set(cv2.CAP_PROP_FPS, 30)
             while True:
                 ret, frame = cap.read()
                 if not ret:
