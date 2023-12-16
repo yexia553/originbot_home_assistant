@@ -13,7 +13,7 @@ while True:
             filepath = os.path.join(directory, filename)
             with open(filepath, "rb") as f:
                 files = {"file": (filename, f)}
-                response = requests.put(url, data=files)
+                response = requests.put(url, files=files)
                 # handle the response, e.g., check if it's successful
             # delete the file after it's sent
             os.remove(filepath)
