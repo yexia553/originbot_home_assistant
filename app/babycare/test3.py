@@ -1,56 +1,35 @@
-import asyncio
-import cv2
-import websockets
-from concurrent.futures import ThreadPoolExecutor
+import ffmpeg
+import requests
 
-executor = ThreadPoolExecutor(max_workers=2)
+input_device = "/dev/video0"
+server_url = "http://10.11.12.173:8000/api/monitor/hlsendpoint/"  # 你的服务器地址
 
+try:
+    process1 = (
+        ffmpeg.input(input_device)
+        .output(
+            "pipe:",
+            format="hls",
+            hls_time=4,
+            hls_list_size=1,
+            hls_wrap=4,
+            hls_flags="delete_segments",
+        )
+        .run_async(pipe_stdout=True, pipe_stderr=True)
+    )
 
-async def send_frame(uri):
-    cap = cv2.VideoCapture(0)  # 使用第一个摄像头
-    if not cap.isOpened():
-        print("Could not open video source")
-        return
-
-    cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
-    cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
-    cap.set(cv2.CAP_PROP_FPS, 30)
-
-    # Initialize an empty frame and encoding future
-    frame, encoding_future = None, None
-
-    try:
-        async with websockets.connect(uri) as websocket:
-            while True:
-                # If there's a frame waiting, get its encoding future
-                if frame is not None:
-                    # Wait for the frame to be encoded
-                    jpeg = await encoding_future
-
-                    if jpeg is None:
-                        print("Could not encode frame to JPEG")
-                        break
-
-                    await websocket.send(jpeg.tobytes())
-
-                # Read the next frame
-                ret, frame = cap.read()
-
-                if not ret:
-                    break
-
-                # Start encoding the frame in a separate thread
-                encoding_future = loop.run_in_executor(executor, encode_frame, frame)
-
-    finally:
-        cap.release()
-
-
-def encode_frame(frame):
-    # Encode the frame into JPEG format
-    ret, jpeg = cv2.imencode(".jpg", frame)
-    return jpeg if ret else None
-
-
-loop = asyncio.get_event_loop()
-loop.run_until_complete(send_frame("ws://10.11.12.173:8000/ws/babycare/"))
+    segment = b""
+    while True:
+        output = process1.stdout.read(1024)
+        if not output:
+            break
+        segment += output
+        if b"#EXT-X-ENDLIST" in segment:  # 当 HLS segment 完成时
+            response = requests.post(server_url, data=segment)  # 发送到服务器
+            if response.status_code == 200:
+                print("Segment sent successfully")
+            else:
+                print("Failed to send segment")
+            segment = b""  # 重置 segment
+except ffmpeg.Error as e:
+    print("ffmpeg Error:", e.stderr.decode())
