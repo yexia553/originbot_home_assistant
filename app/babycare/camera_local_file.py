@@ -26,14 +26,14 @@ def record_video(cap, out, start_time, duration, fourcc, framerate):
             current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
             out = cv2.VideoWriter(
                 "{}.avi".format(current_time), fourcc, framerate, (640, 480)
-         s   )
+            )
             start_time = time.time()
         out.write(frame)
     return out, start_time
 
 
 def main():
-    framerate = 60.0
+    framerate = 30.0
     duration = 10
     fourcc = cv2.VideoWriter_fourcc(*"XVID")
     out = None
