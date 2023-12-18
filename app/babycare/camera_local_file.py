@@ -1,58 +1,41 @@
 import cv2
+import datetime
 import time
-import requests
-import threading
-from datetime import datetime
 
 
-def send_video(file_path):
-    url = "http://example.com/upload"
-    with open(file_path, "rb") as f:
-        files = {"file": f}
-        response = requests.post(url, files=files)
-        if response.status_code != 200:
-            print("Failed to send video: {}".format(response.text))
+# 获取摄像头
+cap = cv2.VideoCapture(0)
 
+# 设置帧率和分辨率
+cap.set(cv2.CAP_PROP_FPS, 30)
+cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
+cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
 
-def record_video(cap, out, start_time, duration, fourcc, framerate):
+# 获取当前时间
+now = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=8)))
+
+# 循环获取视频帧并保存
+while True:
+    # 获取一帧视频
     ret, frame = cap.read()
-    if ret:
-        if time.time() - start_time >= duration:
-            if out is not None:
-                out.release()
-                # threading.Thread(
-                #     target=send_video, args=("{}.avi".format(current_time),)
-                # ).start()
-            current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-            out = cv2.VideoWriter(
-                "{}.avi".format(current_time), fourcc, framerate, (640, 480)
-            )
-            start_time = time.time()
-        out.write(frame)
-    return out, start_time
+    if not ret:
+        break
 
+    # 生成文件名
+    filename = now.strftime("%Y-%m-%d_%H-%M-%S.mp4")
 
-def main():
-    framerate = 30.0
-    duration = 10
-    fourcc = cv2.VideoWriter_fourcc(*"XVID")
-    out = None
+    # 保存视频帧
+    out = cv2.VideoWriter(
+        filename,
+        cv2.VideoWriter_fourcc("M", "P", "4", "V"),
+        30,
+        (frame.shape[1], frame.shape[0]),
+    )
+    out.write(frame)
+    out.release()
 
-    cap = cv2.VideoCapture("/dev/video0")
-    cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
-    cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
-    cap.set(cv2.CAP_PROP_FPS, framerate)
+    # 休眠10秒
+    time.sleep(10)
 
-    start_time = time.time()
-    while cap.isOpened():
-        out, start_time = record_video(
-            cap, out, start_time, duration, fourcc, framerate
-        )
-    cap.release()
-    if out is not None:
-        out.release()
-    cv2.destroyAllWindows()
-
-
-if __name__ == "__main__":
-    main()
+# 释放摄像头
+cap.release()
