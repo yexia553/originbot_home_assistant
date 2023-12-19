@@ -1,11 +1,12 @@
 from django.urls import include, path
 from rest_framework import routers
-from monitor.views import ImageViewSet, stream_video
+from monitor.views import ImageViewSet, stream_video, VideoUploadView
 
 router = routers.DefaultRouter()
-router.register(r'images', ImageViewSet)
+router.register("images", ImageViewSet, basename="images")
+router.register("video-upload", VideoUploadView, basename="video-upload")
 
 urlpatterns = [
-    path('', include(router.urls)),
-    path('video-stream/', stream_video, name='stream-video'),
-]
+    path("", include(router.urls)),
+    path("video-stream/", stream_video, name="stream-video"),
+] + router.urls
