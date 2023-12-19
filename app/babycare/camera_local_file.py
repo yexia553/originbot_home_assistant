@@ -14,6 +14,7 @@ cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
 
 try:
     start_time = time.time()
+    counter = 0
     while True:
         # 获取当前时间
         now = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=8)))
@@ -33,10 +34,11 @@ try:
             if not ret:
                 break
             out.write(frame)
-            if int(time.time() - start_time) > 10:
+            if counter > 300:
                 out.release()
-                start_time = time.time()
-                continue
+                counter += 1
+                print(time.time() - start_time)
+                break
 
 finally:
     # 释放摄像头
