@@ -46,40 +46,11 @@ class APIConnection:
         if res.status_code == 200:
             data = res.json()
             self.token = data["access"]
-            self.headers["Authorization"] = f"Bearer {self.token}"
+            self.headers = {"Authorization": f"Bearer {self.token}"}
         else:
             logging.error(
                 f"Failed to obtain JWT. Status code: {res.status_code}, Message: {res.text}"
             )
-
-    def post_data(self, item, api):
-        """
-        post data
-        :param item: items to be posted in json format
-        :param api: path of endpoint
-        """
-        api_url = f"{self.api_url}{api}"
-
-        try:
-            res = requests.post(
-                api_url, data=json.dumps(item), headers=self.headers, timeout=60
-            )
-
-            if res.status_code == 401:
-                self.request_jwt()
-                self.post_data(item, api)
-
-            elif res.status_code in [200, 201]:
-                logging.info(f"{res.status_code} - data posted successfully")
-                return res.status_code
-
-            else:
-                logging.error(f"{res.status_code} - {res.json()}- unable to post data")
-                return res.status_code
-
-        except Exception as err:
-            logging.error(err)
-            return 500
 
     def upload_video(self, api, file):
         """
@@ -88,7 +59,6 @@ class APIConnection:
         :param api: path of endpoint
         """
         api_url = f"{self.api_url}{api}"
-        self.headers["Content-Type"] = "multipart/form-data"
 
         try:
             res = requests.post(api_url, files=file, headers=self.headers, timeout=60)

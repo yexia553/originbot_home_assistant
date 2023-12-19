@@ -4,7 +4,7 @@ from monitor.views import ImageViewSet, stream_video, VideoUploadView
 
 router = routers.DefaultRouter()
 router.register("images", ImageViewSet, basename="images")
-router.register("video-upload", VideoUploadView, basename="video-upload")
+router.register("video", VideoUploadView, basename="video")
 
 urlpatterns = [
     path("", include(router.urls)),

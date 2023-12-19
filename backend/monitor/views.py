@@ -31,7 +31,7 @@ class VideoUploadView(viewsets.ViewSet):
         serializer = VideoUploadSerializer(data=request.data)
         if serializer.is_valid():
             file_obj = serializer.validated_data["video"]
-            fs = FileSystemStorage(location="media/monitor")
+            fs = FileSystemStorage(location=f"{settings.BASE_DIR}/media/")
 
             # 根据日期划分子目录
             today_folder = str(date.today())
