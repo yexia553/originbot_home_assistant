@@ -1,7 +1,5 @@
 import cv2
-import datetime
 import time
-
 
 # 获取摄像头
 cap = cv2.VideoCapture(0)
@@ -11,33 +9,42 @@ cap.set(cv2.CAP_PROP_FPS, 30)
 cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
 cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
 
-# 获取当前时间
-now = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=8)))
+# 定义视频编码器
+fourcc = cv2.VideoWriter_fourcc(*"XVID")
 
-try:
-    # 循环获取视频帧并保存
-    while True:
-        # 获取一帧视频
-        ret, frame = cap.read()
-        if not ret:
-            break
+# 计数器和时间戳
+counter = 0
+start_time = time.time()
 
-        # 生成文件名
-        filename = now.strftime("%Y-%m-%d_%H-%M-%S.avi")
+# 初始化视频写入对象
+out = cv2.VideoWriter("output" + str(counter) + ".avi", fourcc, 30.0, (640, 480))
 
-        # 保存视频帧
-        out = cv2.VideoWriter(
-            filename,
-            cv2.VideoWriter_fourcc("M", "J", "P", "G"),
-            30,
-            (frame.shape[1], frame.shape[0]),
-        )
-        out.write(frame)
+while True:
+    # 读取帧
+    ret, frame = cap.read()
+    if not ret:
+        break
+
+    # 每10秒创建并保存新的视频文件
+    if int(time.time() - start_time) >= 10:
         out.release()
+        counter += 1
+        out = cv2.VideoWriter(
+            "output" + str(counter) + ".avi", fourcc, 30.0, (640, 480)
+        )
+        start_time = time.time()
 
-        # 休眠10秒
-        time.sleep(10)
+    # 写入帧
+    out.write(frame)
 
-finally:
-    # 释放摄像头
-    cap.release()
+    # 显示帧
+    cv2.imshow("frame", frame)
+
+    # 按 'q' 键退出
+    if cv2.waitKey(1) & 0xFF == ord("q"):
+        break
+
+# 释放摄像头和写入器
+cap.release()
+out.release()
+cv2.destroyAllWindows()
