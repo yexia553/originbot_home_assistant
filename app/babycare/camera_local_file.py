@@ -13,6 +13,7 @@ cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
 
 
 try:
+    start_time = time.time()
     while True:
         # 获取当前时间
         now = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=8)))
@@ -26,7 +27,6 @@ try:
             (640, 480),
         )
         # 循环获取视频帧并保存
-        start_time = time.time()
         while True:
             # 获取一帧视频
             ret, frame = cap.read()
@@ -35,6 +35,7 @@ try:
             out.write(frame)
             if int(time.time() - start_time) > 10:
                 out.release()
+                start_time = time.time()
                 continue
 
 finally:
