@@ -3,7 +3,7 @@
         <div>
             <el-row>
                 <div class="demo-basic--circle">
-                    <el-avatar shape="square" :size="small" :src="getImgSrc()" />
+                    <el-avatar shape="square" :src="getImgSrc()" />
                 </div>
                 <div class="sub-title">OriginBot Home Assistant</div>
             </el-row>
