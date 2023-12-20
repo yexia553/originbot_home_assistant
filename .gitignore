@@ -1,5 +1,6 @@
 .vscode/
-/backend/utils/envs.py
+/backend/static/
+/backend/media/
 frontend/node_modules/
 # Byte-compiled / optimized / DLL files
 __pycache__/
