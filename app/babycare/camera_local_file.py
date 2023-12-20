@@ -9,7 +9,7 @@ if not cap.isOpened():
     raise Exception("无法打开摄像头")
 
 # 设置帧率和分辨率
-cap.set(cv2.CAP_PROP_FPS, 20)
+cap.set(cv2.CAP_PROP_FPS, 5)
 cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
 cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
 
@@ -20,7 +20,7 @@ def get_vidoe_out():
     out = cv2.VideoWriter(
         filename,
         cv2.VideoWriter_fourcc(*"XVID"),
-        20,
+        5,
         (1280, 720),
     )
     return out
