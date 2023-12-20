@@ -20,8 +20,8 @@ def get_vidoe_out():
     out = cv2.VideoWriter(
         filename,
         cv2.VideoWriter_fourcc(*"XVID"),
-        10,
-        (640, 480),
+        20,
+        (1280, 720),
     )
     return out
 
