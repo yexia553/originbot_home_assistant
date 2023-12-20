@@ -9,9 +9,9 @@ if not cap.isOpened():
     raise Exception("无法打开摄像头")
 
 # 设置帧率和分辨率
-cap.set(cv2.CAP_PROP_FPS, 10)
-cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
-cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
+cap.set(cv2.CAP_PROP_FPS, 20)
+cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
+cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
 
 
 def get_vidoe_out():
