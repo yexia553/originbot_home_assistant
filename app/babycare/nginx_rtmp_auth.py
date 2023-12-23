@@ -15,18 +15,19 @@ app = Flask(__name__)
 # 传入url格式为: xx.xx.xx.xx:10078/user/auth?usr=xxx&passWord=xxx
 @app.route("/user/auth", methods=["POST"])
 def auth():
-    user = request.form["username"]  # 从url后获取的数据
-    password = request.form["password"]
-    print(user, "\t", password)
-    # 此处可改为从数据库获取数据
-    auth_user = "admin"
-    auth_passWord = "Pass1234"
-    if auth_user == user and auth_passWord == password:
-        return Response(response="success", status=200)  # 返回200状态码
-    else:
-        return Response(status=500)  # 返回500状态码
-        # Flask.abort(404)
-    return password
+    # user = request.form["username"]  # 从url后获取的数据
+    # password = request.form["password"]
+    # print(user, "\t", password)
+    # # 此处可改为从数据库获取数据
+    # auth_user = "admin"
+    # auth_passWord = "Pass1234"
+    # if auth_user == user and auth_passWord == password:
+    #     return Response(response="success", status=200)  # 返回200状态码
+    # else:
+    #     return Response(status=500)  # 返回500状态码
+    token = request.form["token"]
+    if token == "Pass1234":
+        return Response(response="success", status=200)
 
 
 if __name__ == "__main__":
