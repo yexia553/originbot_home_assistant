@@ -15,6 +15,7 @@ FROM nginx:1.24-alpine as production-stage
 RUN apk update
 RUN apk upgrade
 COPY nginx/nginx.conf /etc/nginx/nginx.conf
+RUN rm -f /etc/nginx/conf.d/default.conf
 COPY --from=build-stage /code/dist /dist/
 RUN addgroup -S -g 1010 appuser
 RUN adduser -S -u 1010 -G appuser appuser
