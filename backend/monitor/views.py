@@ -9,8 +9,8 @@ from datetime import date
 from rest_framework import viewsets
 from django.http import FileResponse
 from django.conf import settings
-from .models import ImageModel
-from .serializers import ImageSerializer, VideoUploadSerializer
+from .models import ImageModel, NginxRTMPToken
+from .serializers import ImageSerializer, VideoUploadSerializer, RTMPTokenSerializer
 
 
 class ImageViewSet(viewsets.ModelViewSet):
@@ -58,3 +58,8 @@ class VideoUploadView(viewsets.ViewSet):
             )
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class RTMPAuthView(viewsets.ModelViewSet):
+    serializer_class = RTMPTokenSerializer
+    queryset = NginxRTMPToken.objects.all()

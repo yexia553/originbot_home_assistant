@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import ImageModel
+from .models import ImageModel, NginxRTMPToken
 
 
 class ImageSerializer(serializers.ModelSerializer):
@@ -14,3 +14,9 @@ class VideoUploadSerializer(serializers.Serializer):
     """
 
     video = serializers.FileField(max_length=None, allow_empty_file=False)
+
+
+class RTMPTokenSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = NginxRTMPToken
+        fields = "__all__"

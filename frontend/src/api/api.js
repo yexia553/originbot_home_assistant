@@ -16,4 +16,10 @@ export default {
             data: params,
         })
     },
+    getRTMPToken() {
+        return request({
+            url: '/api/monitor/rtmp-token',
+            method: 'get',
+        })
+    },
 }

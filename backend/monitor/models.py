@@ -6,4 +6,9 @@ class ImageModel(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        ordering = ['-timestamp']
+        ordering = ["-timestamp"]
+
+
+class NginxRTMPToken(models.Model):
+    password = models.CharField(max_length=128)
+    username = models.CharField(max_length=128)

@@ -14,6 +14,7 @@
     "@videojs/http-streaming": "^2.16.2",
     "axios": "^1.5.0",
     "element-plus": "^2.4.4",
+    "flv.js": "^1.6.2",
     "js-cookie": "^3.0.5",
     "less": "^4.2.0",
     "recorder-core": "^1.2.23070100",
