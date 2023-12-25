@@ -23,37 +23,23 @@ export default {
         onMounted(async () => {
             let res = await proxy.$api.getRTMPToken();
             if (res.status === 200) {
-                console.log(res.data);
                 const username = res.data.results[0].username;
                 const password = res.data.results[0].password;
+                videoUrl.value = `http://${username}:${password}@10.11.12.173:8001/hls/babycare.m3u8`
 
-                // 使用 fetch API 获取 m3u8 数据
-                fetch('http://10.11.12.173:8001/hls/babycare.m3u8', {
-                    headers: {
-                        'Authorization': 'Basic ' + btoa(username + ':' + password)
-                    }
-                }).then(response => response.blob())
-                    .then(blob => {
-                        videoUrl.value = URL.createObjectURL(blob);
-
-                        player = videojs(videoPlayer.value, {}, function () {
-                            console.log('Player ready');
-                            this.src({
-                                src: videoUrl.value,
-                                type: 'application/x-mpegURL',
-                            });
-                            this.play();
-                        });
+                player = videojs(videoPlayer.value, {}, () => {
+                    console.log('Player ready')
+                    player.src({
+                        src: videoUrl.value,
+                        type: 'application/x-mpegURL',
                     })
-                    .catch(error => {
-                        console.error('Failed to load video:', error);
-                    });
+                    player.play();
+                });
 
             } else {
                 console.error('Failed to get rtmp token');
             }
         });
-
 
         onBeforeUnmount(() => {
             if (player) {
@@ -70,17 +56,8 @@ export default {
 </script>
 
 <style scoped>
-.VideoPlayer {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
 .video-js {
-    /* width: 640px;
-    height: 480px; */
-    width: 64vw;
-    height: 36vw;
-
+    width: 640px;
+    height: 480px;
 }
 </style>
