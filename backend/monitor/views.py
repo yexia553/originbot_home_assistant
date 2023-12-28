@@ -1,16 +1,18 @@
 from django.core.files.storage import FileSystemStorage
+from django.http import FileResponse
+from django.conf import settings
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
+from rest_framework import viewsets
 import os
 import glob
 from datetime import date
-from rest_framework import viewsets
-from django.http import FileResponse
-from django.conf import settings
+
 from .models import ImageModel, NginxRTMPToken
 from .serializers import ImageSerializer, VideoUploadSerializer, RTMPTokenSerializer
+from utils.ding_talk import send_msg_to_dingtalk
 
 
 class ImageViewSet(viewsets.ModelViewSet):
@@ -61,5 +63,26 @@ class VideoUploadView(viewsets.ViewSet):
 
 
 class RTMPAuthView(viewsets.ModelViewSet):
+    """
+    用于视频流的推送端和播放端获取token来通过RTMP的认证
+    """
+
     serializer_class = RTMPTokenSerializer
     queryset = NginxRTMPToken.objects.all()
+
+
+class DingTalkView(APIView):
+    """
+    向钉钉发送消息
+    """
+
+    def post(self, request):
+        message = request.data.get("message")
+
+        try:
+            send_msg_to_dingtalk(message)
+            return Response({"message": "消息发送成功"}, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response(
+                {"message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
