@@ -62,13 +62,37 @@ class VideoUploadView(viewsets.ViewSet):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class RTMPAuthView(viewsets.ModelViewSet):
+class RTMPAuthTokenView(viewsets.ModelViewSet):
     """
     用于视频流的推送端和播放端获取token来通过RTMP的认证
     """
 
     serializer_class = RTMPTokenSerializer
     queryset = NginxRTMPToken.objects.all()
+
+
+class RTMPAuthView(APIView):
+    """
+    用于RTMP的认证,
+    在Nginx RTMP配置的on_publish和on_play里面使用
+    """
+
+    def post(self, request):
+        token = request.data.get("token")
+
+        try:
+            token_db = NginxRTMPToken.objects.filter(pk=1)
+
+            if token_db == token:
+                return Response({"message": "认证成功"}, status=status.HTTP_200_OK)
+            else:
+                return Response(
+                    {"message": "认证失败"}, status=status.HTTP_401_UNAUTHORIZED
+                )
+        except NginxRTMPToken.DoesNotExist:
+            return Response(
+                {"message": "认证失败"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
 
 class DingTalkView(APIView):
