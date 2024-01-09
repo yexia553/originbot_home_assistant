@@ -2,6 +2,9 @@
 /backend/static/
 /backend/media/
 frontend/node_modules/
+originbot/build/
+originbot/install/
+originbot/log/
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

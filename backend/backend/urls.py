@@ -22,7 +22,6 @@ from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 
 urlpatterns = [
-    path("admin/", admin.site.urls),
     path("api/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
     path("api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
     path("api/voice_control/", include("voice_control.urls"), name="voice_control"),
@@ -30,4 +29,8 @@ urlpatterns = [
 ]
 
 if settings.DEBUG:
+    urlpatterns.append(path("admin/", admin.site.urls))
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+if not settings.DEBUG:
+    urlpatterns.append(path("babycare-admin/", admin.site.urls))
