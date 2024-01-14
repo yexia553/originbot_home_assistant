@@ -2,11 +2,19 @@ import json
 import requests
 from utils import envs
 
+from datetime import datetime
+
 
 def send_msg_to_dingtalk(msg):
     webhook = envs.DING_TALK_URL
     headers = {"Content-Type": "application/json;charset=utf-8"}
-    data = {"msgtype": "text", "text": {"content": msg}}
+    data = {
+        "msgtype": "text",
+        "text": {
+            "content": msg
+            + f"[来自originbot，{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]"
+        },
+    }
 
     response = requests.post(webhook, headers=headers, data=json.dumps(data))
     return response.text

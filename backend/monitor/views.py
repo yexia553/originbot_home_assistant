@@ -10,7 +10,7 @@ import os
 import glob
 from datetime import date
 
-from .models import ImageModel, NginxRTMPToken, BabyMonitorData
+from .models import ImageModel, NginxRTMPToken, BabyMonitorData, Baby
 from .serializers import (
     ImageSerializer,
     VideoUploadSerializer,
@@ -120,3 +120,19 @@ class DingTalkView(APIView):
 class BabyMonitorView(viewsets.ModelViewSet):
     queryset = BabyMonitorData.objects.all().order_by("-timestamp")
     serializer_class = BabyMonitorSerializer
+
+    def create(self, request, *args, **kwargs):
+        response = super().create(request, *args, **kwargs)
+
+        message = request.data
+        try:
+            event = message.get("event")
+            baby = Baby.objects.filter(id=message.get("baby"))[0].name
+        except IndexError:
+            print("找不到对应的婴儿数据")
+            return response
+
+        send_msg_to_dingtalk(f"{baby} {event} 啦！")
+
+        # 返回原始的 response
+        return response

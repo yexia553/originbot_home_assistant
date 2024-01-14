@@ -36,7 +36,12 @@ class BabyMonitorData(models.Model):
     记录宝宝监控相关的数据
     """
 
-    event_choices = (("看不到脸", "看不到脸"), ("哭", "哭"), ("翻身", "翻身"))
+    event_choices = (
+        ("看不到脸", "看不到脸"),
+        ("哭", "哭"),
+        ("翻身", "翻身"),
+        ("不在摄像头范围内", "不在摄像头范围内"),
+    )
 
     baby = models.ForeignKey(Baby, on_delete=models.PROTECT)
     event = models.CharField(max_length=128, choices=event_choices)
