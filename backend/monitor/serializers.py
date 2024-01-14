@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import ImageModel, NginxRTMPToken
+from .models import ImageModel, NginxRTMPToken, BabyMonitorData
 
 
 class ImageSerializer(serializers.ModelSerializer):
@@ -19,4 +19,10 @@ class VideoUploadSerializer(serializers.Serializer):
 class RTMPTokenSerializer(serializers.ModelSerializer):
     class Meta:
         model = NginxRTMPToken
+        fields = "__all__"
+
+
+class BabyMonitorSerializer(serializers.ModelSerializer):
+    class Meat:
+        model = BabyMonitorData
         fields = "__all__"
