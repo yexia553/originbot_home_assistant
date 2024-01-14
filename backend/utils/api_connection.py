@@ -80,3 +80,32 @@ class APIConnection:
         except Exception as err:
             logging.error(err)
             return 500
+
+    def post_data(self, item, api):
+        """
+        新建一条数据
+        """
+        api_url = f"{self.api_url}{api}"
+
+        try:
+            response = requests.post(
+                api_url, data=json.dumps(item), headers=self.headers, timeout=1
+            )
+
+            if response.status_code == 403:
+                self.request_jwt()
+                self.post_data(item, api)
+
+            elif response.status_code not in [200, 201]:
+                logging.error(
+                    f"post data to backend failed, \
+                              status code is {response.status_code}, \
+                              error message is:\n \
+                              {response.text}"
+                )
+        except Exception as err:
+            logging.error(
+                f"post data to backend failed, \
+                            error message is:\n \
+                            {err}"
+            )

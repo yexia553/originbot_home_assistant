@@ -6,10 +6,10 @@ from cv_bridge import CvBridge
 
 class FaceDetectionListener(Node):
     def __init__(self):
-        super().__init__('face_detection')
+        super().__init__("face_detection")
         self.bridge = CvBridge()
         self.subscription = self.create_subscription(
-            PerceptionTargets, 'hobot_mono2d_body_detection', self.listener_callback, 10
+            PerceptionTargets, "hobot_mono2d_body_detection", self.listener_callback, 10
         )
 
     def listener_callback(self, msg):
@@ -40,5 +40,5 @@ def main(args=None):
         rclpy.shutdown()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

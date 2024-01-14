@@ -10,8 +10,13 @@ import os
 import glob
 from datetime import date
 
-from .models import ImageModel, NginxRTMPToken
-from .serializers import ImageSerializer, VideoUploadSerializer, RTMPTokenSerializer
+from .models import ImageModel, NginxRTMPToken, BabyMonitorData
+from .serializers import (
+    ImageSerializer,
+    VideoUploadSerializer,
+    RTMPTokenSerializer,
+    BabyMonitorSerializer,
+)
 from utils.ding_talk import send_msg_to_dingtalk
 
 
@@ -110,3 +115,8 @@ class DingTalkView(APIView):
             return Response(
                 {"message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
+
+
+class BabyMonitorView(viewsets.ModelViewSet):
+    queryset = BabyMonitorData.objects.all().order_by("-timestamp")
+    serializer_class = BabyMonitorSerializer

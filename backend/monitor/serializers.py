@@ -23,6 +23,6 @@ class RTMPTokenSerializer(serializers.ModelSerializer):
 
 
 class BabyMonitorSerializer(serializers.ModelSerializer):
-    class Meat:
+    class Meta:
         model = BabyMonitorData
         fields = "__all__"

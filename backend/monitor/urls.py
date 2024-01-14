@@ -7,12 +7,14 @@ from monitor.views import (
     RTMPAuthTokenView,
     RTMPAuthView,
     DingTalkView,
+    BabyMonitorView,
 )
 
 router = routers.DefaultRouter()
 router.register("images", ImageViewSet, basename="images")
 router.register("video", VideoUploadView, basename="video")
 router.register("rtmp-token", RTMPAuthTokenView, basename="rtmp-token")
+router.register("face-detection", BabyMonitorView, basename="face-detection")
 
 urlpatterns = [
     path("", include(router.urls)),
