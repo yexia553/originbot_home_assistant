@@ -3,7 +3,7 @@ from rclpy.node import Node
 from ai_msgs.msg import PerceptionTargets
 from cv_bridge import CvBridge
 
-from .api_connection import APIConnection
+from api_connection import APIConnection
 
 
 class FaceDetectionListener(Node):
@@ -26,10 +26,10 @@ class FaceDetectionListener(Node):
         if targets:
             for item in targets:
                 targets_list.append(item.rois[0].type)
-        print(f"新增的对象如下：{targets_list}")
+        print(f"检测到的对象如下：{targets_list}")
         print(f"消失的对象如下：{disappeared_targets_list}")
         if "face" in disappeared_targets_list:
-            data = {"event": "看不到脸", "baby": "潘延"}
+            data = {"event": "看不到脸", "baby": "6b56979a-b2b9-11ee-920d-f12e14f97477"}
             self.conn.post_data(item=data, api="api/monitor/face-detection/")
 
 
