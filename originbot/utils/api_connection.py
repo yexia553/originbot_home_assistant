@@ -4,7 +4,7 @@ API CONNECTION FOR IMPORTING WRAPPER
 import json
 import logging
 import requests
-from utils import envs
+import envs
 
 
 logging.basicConfig(
@@ -46,7 +46,7 @@ class APIConnection:
         if res.status_code == 200:
             data = res.json()
             self.token = data["access"]
-            self.headers = {"Authorization": f"Bearer {self.token}"}
+            self.headers["Authorization"] = f"Bearer {self.token}"
         else:
             logging.error(
                 f"Failed to obtain JWT. Status code: {res.status_code}, Message: {res.text}"
